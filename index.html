@@ -1,0 +1,2957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SmartTour AI</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#eef7f5;
+    color:#183b3a;
+}
+
+header{
+    background:linear-gradient(135deg,#063f3b,#087f73);
+    color:white;
+    padding:25px 30px;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.subtitle{
+    margin-top:6px;
+    opacity:.9;
+}
+
+nav{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:12px 20px;
+    background:white;
+    box-shadow:0 2px 10px #0001;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.nav-btn{
+    border:none;
+    background:#edf7f5;
+    color:#155a55;
+    padding:12px 18px;
+    border-radius:25px;
+    cursor:pointer;
+    white-space:nowrap;
+    font-weight:bold;
+}
+
+.nav-btn.active,
+.nav-btn:hover{
+    background:#087f73;
+    color:white;
+}
+
+.container{
+    max-width:1150px;
+    margin:auto;
+    padding:25px;
+}
+
+.tab{
+    display:none;
+}
+
+.tab.active{
+    display:block;
+}
+
+.hero{
+    background:linear-gradient(135deg,#d9f5ef,#fff);
+    border-radius:22px;
+    padding:35px;
+    margin-bottom:25px;
+}
+
+.hero h1{
+    font-size:38px;
+    margin-bottom:12px;
+}
+
+.hero p{
+    color:#55716e;
+    line-height:1.6;
+    font-size:17px;
+}
+
+.card{
+    background:white;
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:20px;
+    box-shadow:0 5px 18px #0000000d;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+}
+
+.grid3{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+select,
+input{
+    width:100%;
+    padding:13px;
+    border:1px solid #c9ddda;
+    border-radius:10px;
+    font-size:16px;
+}
+
+.primary{
+    background:#087f73;
+    color:white;
+    border:none;
+    padding:14px 24px;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:15px;
+}
+
+.primary:hover{
+    background:#05665d;
+}
+
+.budget-box{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-top:10px;
+}
+
+.budget-btn{
+    width:45px;
+    height:45px;
+    border:none;
+    border-radius:50%;
+    background:#087f73;
+    color:white;
+    font-size:25px;
+    cursor:pointer;
+}
+
+.budget-value{
+    font-size:28px;
+    font-weight:bold;
+    min-width:140px;
+    text-align:center;
+}
+
+/* PLACE / HOTEL / FEATURE */
+
+.place-card,
+.hotel-card,
+.feature-card,
+.craft-card{
+    background:white;
+    border-radius:17px;
+    overflow:hidden;
+    box-shadow:0 4px 15px #00000012;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.place-card:hover,
+.hotel-card:hover,
+.feature-card:hover,
+.craft-card:hover{
+    transform:translateY(-5px);
+}
+
+.place-card img,
+.hotel-card img,
+.feature-card img,
+.craft-card img{
+    width:100%;
+    height:190px;
+    object-fit:cover;
+}
+
+.place-info,
+.hotel-info,
+.feature-content,
+.craft-info{
+    padding:16px;
+}
+
+.place-info h3,
+.hotel-info h3,
+.feature-content h3,
+.craft-info h3{
+    margin-bottom:8px;
+}
+
+.tag{
+    display:inline-block;
+    background:#dff4ef;
+    color:#087f73;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:12px;
+    margin-top:8px;
+}
+
+.rating{
+    color:#d99000;
+    font-weight:bold;
+    margin:6px 0;
+}
+
+/* CRAFT CARD */
+
+.craft-card{
+    position:relative;
+}
+
+.craft-card img{
+    height:210px;
+}
+
+.craft-info p{
+    color:#667;
+    line-height:1.5;
+    font-size:14px;
+}
+
+.craft-info .tag{
+    margin-top:12px;
+}
+
+/* DETAIL PANEL */
+
+.detail-panel{
+    display:none;
+    margin-top:22px;
+    background:#f5fbfa;
+    border-radius:18px;
+    padding:20px;
+    border:1px solid #d3eae6;
+}
+
+.detail-panel.show{
+    display:block;
+}
+
+.detail-panel>img{
+    width:100%;
+    max-height:350px;
+    object-fit:cover;
+    border-radius:15px;
+    margin:15px 0;
+}
+
+.detail-gallery{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.detail-gallery div{
+    background:white;
+    padding:8px;
+    border-radius:12px;
+    box-shadow:0 3px 12px #0001;
+}
+
+.detail-gallery img{
+    width:100%;
+    height:190px;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+.room-gallery-title{
+    margin:20px 0 12px;
+}
+
+.room-label{
+    font-weight:bold;
+    margin-top:8px;
+    color:#155a55;
+}
+
+.gallery-note{
+    margin:10px 0 18px;
+    color:#55716e;
+}
+
+.plan{
+    border-left:5px solid #087f73;
+    padding:15px 18px;
+    margin-top:12px;
+    background:#f2fbf9;
+    border-radius:10px;
+    line-height:1.5;
+}
+
+.price{
+    font-size:25px;
+    color:#087f73;
+    font-weight:bold;
+}
+
+.safe{
+    color:#07814f;
+    font-weight:bold;
+}
+
+.warning{
+    color:#c47b00;
+    font-weight:bold;
+}
+
+.budget-result{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-top:18px;
+}
+
+.budget-item{
+    background:#f1faf8;
+    padding:16px;
+    border-radius:12px;
+}
+
+.budget-item strong{
+    display:block;
+    font-size:20px;
+    margin-top:6px;
+}
+
+.total{
+    background:#087f73;
+    color:white;
+    padding:20px;
+    border-radius:15px;
+    margin-top:15px;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.shopping-highlight{
+    background:linear-gradient(135deg,#fff8e8,#fff);
+    border-left:5px solid #d99000;
+    padding:18px;
+    border-radius:12px;
+    margin-top:18px;
+}
+
+.map-container{
+    width:100%;
+    height:500px;
+    border-radius:18px;
+    overflow:hidden;
+    border:2px solid #d3eae6;
+    box-shadow:0 5px 18px #0002;
+}
+
+.map-container iframe{
+    width:100%;
+    height:100%;
+    border:none;
+}
+
+@media(max-width:750px){
+
+    .container{
+        padding:15px;
+    }
+
+    .hero{
+        padding:24px;
+    }
+
+    .hero h1{
+        font-size:28px;
+    }
+
+    .grid,
+    .grid3,
+    .budget-result,
+    .detail-gallery{
+        grid-template-columns:1fr;
+    }
+
+    .map-container{
+        height:400px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+🌍 SmartTour AI
+</div>
+
+<div class="subtitle">
+Intelligence Beyond Imagination • AI Powered Tourism Planner
+</div>
+
+</header>
+
+
+<nav>
+
+<button class="nav-btn active"
+onclick="openTab('home',this)">
+🏠 Home
+</button>
+
+<button class="nav-btn"
+onclick="openTab('discover',this)">
+🔍 Discover
+</button>
+
+<button class="nav-btn"
+onclick="openTab('plan',this)">
+🤖 AI Plan
+</button>
+
+<button class="nav-btn"
+onclick="openTab('hotels',this)">
+🏨 Hotels
+</button>
+
+<button class="nav-btn"
+onclick="openTab('shopping',this)">
+🛍️ Street Shopping
+</button>
+
+<button class="nav-btn"
+onclick="openTab('safety',this)">
+🛡️ Safety
+</button>
+
+<button class="nav-btn"
+onclick="openTab('maptab',this)">
+🗺️ Map
+</button>
+
+</nav>
+
+
+<div class="container">
+
+
+<!-- ================= HOME ================= -->
+
+<section id="home" class="tab active">
+
+<div class="hero">
+
+<h1>
+✨ Your AI Travel Companion
+</h1>
+
+<p>
+Discover beautiful views, historical places,
+memorable experiences, hotels, shopping streets,
+safe routes and smart travel plans — all in one place.
+</p>
+
+<button class="primary"
+onclick="goDiscover()">
+🚀 Start Planning
+</button>
+
+</div>
+
+
+<div class="grid3">
+
+<div class="feature-card"
+onclick="showFeature('view')">
+
+<img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80">
+
+<div class="feature-content">
+
+<h3>🌄 Best View</h3>
+
+<p>
+Find beautiful scenic locations.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="feature-card"
+onclick="showFeature('history')">
+
+<img src="https://images.unsplash.com/photo-1564399579883-451a5d44ec08?auto=format&fit=crop&w=900&q=80">
+
+<div class="feature-content">
+
+<h3>📜 History & Culture</h3>
+
+<p>
+Explore heritage and local culture.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="feature-card"
+onclick="showFeature('memory')">
+
+<img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80">
+
+<div class="feature-content">
+
+<h3>⭐ Memorable</h3>
+
+<p>
+Discover unforgettable experiences.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div id="featureDetails"
+class="detail-panel">
+</div>
+
+</section>
+
+
+<!-- ================= DISCOVER ================= -->
+
+<section id="discover" class="tab">
+
+<div class="card">
+
+<h2>
+🔍 Discover Your Destination
+</h2>
+
+<br>
+
+<div class="grid">
+
+<div>
+
+<label>
+Choose Destination
+</label>
+
+<select id="destination"
+onchange="updateDestination()">
+
+<option value="Shillong">
+Shillong
+</option>
+
+<option value="Cherrapunji">
+Cherrapunji
+</option>
+
+<option value="Dawki">
+Dawki
+</option>
+
+<option value="Mawlynnong">
+Mawlynnong
+</option>
+
+<option value="Laitlum">
+Laitlum Canyon
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>
+Travel Days
+</label>
+
+<input
+id="days"
+type="number"
+value="3"
+min="1"
+max="30"
+onchange="updateDestination()">
+
+</div>
+
+</div>
+
+
+<br>
+
+<label>
+💰 Your Budget
+</label>
+
+<div class="budget-box">
+
+<button class="budget-btn"
+onclick="changeBudget(-500)">
+−
+</button>
+
+<div class="budget-value">
+₹<span id="budget">10000</span>
+</div>
+
+<button class="budget-btn"
+onclick="changeBudget(500)">
++
+</button>
+
+</div>
+
+
+<button class="primary"
+onclick="calculateBudget()">
+🧮 Calculate Budget
+</button>
+
+
+<button class="primary"
+onclick="generatePlan()">
+✨ Generate My Plan
+</button>
+
+</div>
+
+
+<div id="destinationDetails">
+</div>
+
+<div id="discoverBudget">
+</div>
+
+</section>
+
+
+<!-- ================= AI PLAN ================= -->
+
+<section id="plan" class="tab">
+
+<div class="card">
+
+<h2>
+🤖 Your AI Travel Plan
+</h2>
+
+<div id="planContent">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= HOTELS ================= -->
+
+<section id="hotels" class="tab">
+
+<div class="card">
+
+<h2>
+🏨 Recommended Hotels in
+<span id="hotelDestinationTitle">
+Shillong
+</span>
+</h2>
+
+<p id="hotelSubtitle">
+Only hotels around your selected destination are shown.
+</p>
+
+<br>
+
+<div id="hotelGrid"
+class="grid3">
+</div>
+
+
+<div id="hotelDetails"
+class="detail-panel">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= SHOPPING ================= -->
+
+<section id="shopping" class="tab">
+
+<div class="hero">
+
+<h1 id="shoppingTitle">
+🛍️ Street Shopping
+</h1>
+
+<p id="shoppingSubtitle">
+Explore shopping places related to your selected destination.
+</p>
+
+</div>
+
+
+<div id="shoppingGrid"
+class="grid3">
+</div>
+
+
+<div id="shoppingDetails"
+class="detail-panel">
+</div>
+
+
+<div class="card">
+
+<h2>
+🎒 Handcrafted & Local Products
+</h2>
+
+<br>
+
+<div id="craftGrid"
+class="grid3">
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+🤖 AI Shopping Recommendation
+</h2>
+
+<div id="shoppingRecommendation">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= SAFETY ================= -->
+
+<section id="safety" class="tab">
+
+<div class="card">
+
+<h2>
+🛡️ Tourist Safety
+</h2>
+
+<br>
+
+<div class="grid3">
+
+<div class="plan">
+
+<h3>
+🟢 Safety Score
+</h3>
+
+<br>
+
+<div class="price">
+92/100
+</div>
+
+<p>
+Good for tourist travel.
+</p>
+
+</div>
+
+
+<div class="plan">
+
+<h3>
+🚑 Emergency
+</h3>
+
+<br>
+
+<p>
+Hospital and police support should be
+available nearby.
+</p>
+
+</div>
+
+
+<div class="plan">
+
+<h3>
+🌦️ Weather
+</h3>
+
+<br>
+
+<p class="warning">
+Check weather before hill travel.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="plan">
+
+<h3>
+🛣️ Recommended Safe Route
+</h3>
+
+<br>
+
+<p id="safeRoute">
+Shillong → Laitlum → Shillong
+</p>
+
+<br>
+
+<p class="safe">
+✔ Tourist-friendly route
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= MAP ================= -->
+
+<section id="maptab" class="tab">
+
+<div class="card">
+
+<h2>
+🗺️ Smart Tourism Map
+</h2>
+
+<br>
+
+<div class="map-container">
+
+<iframe
+src="https://www.openstreetmap.org/export/embed.html?bbox=91.84%2C25.50%2C91.94%2C25.63&layer=mapnik&marker=25.5788%2C91.8933"
+title="Shillong OpenStreetMap">
+</iframe>
+
+</div>
+
+<br>
+
+<div class="grid3">
+
+<div class="plan">
+📍 Tourist Places
+</div>
+
+<div class="plan">
+🏨 Hotels
+</div>
+
+<div class="plan">
+🛍️ Shopping
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let budget = 10000;
+
+let selectedDestination = "Shillong";
+
+
+/* =====================================================
+   IMAGE COLLECTIONS
+===================================================== */
+
+/*
+   Each craft has multiple images.
+   index 0 = Bamboo
+   index 1 = Cane
+   index 2 = Fabric
+   index 3 = Souvenir
+*/
+
+const craftGallery = [
+
+[
+"https://images.unsplash.com/photo-1523779917675-b6ed3a42a561?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1544967919-4f1f3c1f4c3f?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1606914469633-b1d6b8c6d9c4?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=900&q=80"
+],
+
+[
+"https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1542296332-2e4473faf563?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=900&q=80"
+],
+
+[
+"https://images.unsplash.com/photo-1605763240000-7e93b172d754?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1583743814966-8936f37f4678?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1604176354204-9268737828e4?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1610652492500-ded49ceeb378?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=900&q=80"
+],
+
+[
+"https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1523779917675-b6ed3a42a561?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=900&q=80"
+]
+
+];
+
+
+/* =====================================================
+   DESTINATION DATABASE
+===================================================== */
+
+const destinationData = {
+
+Shillong:{
+
+name:"Shillong",
+
+places:[
+
+{
+name:"🌄 Laitlum Canyon",
+type:"Best View",
+image:"https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=80",
+text:"Beautiful mountain valley with panoramic views."
+},
+
+{
+name:"💧 Elephant Falls",
+type:"Nature",
+image:"https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=900&q=80",
+text:"Popular waterfall surrounded by greenery."
+},
+
+{
+name:"🏛️ Don Bosco Museum",
+type:"History & Culture",
+image:"https://images.unsplash.com/photo-1564399579883-451a5d44ec08?auto=format&fit=crop&w=900&q=80",
+text:"Explore Northeast Indian culture and heritage."
+},
+
+{
+name:"🌅 Shillong Peak",
+type:"Memorable",
+image:"https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80",
+text:"Scenic viewpoint overlooking Shillong."
+}
+
+],
+
+hotels:[
+
+{
+name:"Vivanta Meghalaya",
+rating:"★★★★★ 4.5",
+price:"₹7,000+ / night",
+location:"Police Bazar, Shillong",
+
+image:"https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+
+{
+name:"🛏️ Deluxe Room",
+image:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+name:"🛏️ Premium Room",
+image:"https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+name:"🛋️ Suite / Living Area",
+image:"https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80"
+}
+
+]
+
+},
+
+{
+name:"Courtyard by Marriott Shillong",
+rating:"★★★★★ 4.6",
+price:"₹8,000+ / night",
+location:"Jail Road, Shillong",
+
+image:"https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+
+{
+name:"🛏️ Deluxe Room",
+image:"https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+name:"🛏️ Premium Room",
+image:"https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+name:"🛋️ Suite",
+image:"https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=900&q=80"
+}
+
+]
+
+},
+
+{
+name:"The Eee Cee Hotel",
+rating:"★★★★☆ 4.0",
+price:"₹3,500+ / night",
+location:"Khyndailad, Shillong",
+
+image:"https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+
+{
+name:"🛏️ Standard Room",
+image:"https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+name:"🛏️ Deluxe Room",
+image:"https://images.unsplash.com/photo-1590490359683-658d3d23f972?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+name:"🛋️ Family Room",
+image:"https://images.unsplash.com/photo-1595576508898-0ad5c879a061?auto=format&fit=crop&w=900&q=80"
+}
+
+]
+
+}
+
+],
+
+shopping:[
+
+{
+name:"🛍️ Police Bazaar",
+tag:"⭐ Best Overall",
+image:"https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=80",
+text:"Popular shopping, food and city experience.",
+items:[
+"👕 Clothes & winter wear",
+"🎒 Bags & accessories",
+"🎁 Meghalaya souvenirs",
+"🎋 Bamboo & cane products",
+"🍴 Local street food"
+]
+},
+
+{
+name:"🧺 Bara Bazaar / Iewduh",
+tag:"🌿 Local Experience",
+image:"https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=900&q=80",
+text:"Traditional local market experience.",
+items:[
+"🥬 Local vegetables",
+"🌿 Regional products",
+"🎋 Bamboo products",
+"🧺 Traditional goods"
+]
+},
+
+{
+name:"🛒 Laitumkhrah",
+tag:"☕ Shopping + Cafe",
+image:"https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?auto=format&fit=crop&w=900&q=80",
+text:"Lively shopping and cafe area.",
+items:[
+"👚 Fashion",
+"🎁 Small gifts",
+"☕ Cafes",
+"🍴 Local food"
+]
+}
+
+],
+
+crafts:[
+"🎋 Bamboo & cane handicrafts",
+"🧺 Traditional baskets",
+"🧣 Khasi fabrics",
+"🎁 Meghalaya souvenirs"
+],
+
+route:"Shillong → Laitlum → Shillong"
+
+},
+
+
+Cherrapunji:{
+
+name:"Cherrapunji",
+
+places:[
+
+{
+name:"💧 Nohkalikai Falls",
+type:"Best View",
+image:"https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=900&q=80",
+text:"One of the most spectacular waterfalls in Meghalaya."
+},
+
+{
+name:"🌉 Double Decker Living Root Bridge",
+type:"Memorable",
+image:"https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=900&q=80",
+text:"Unique living root bridge surrounded by nature."
+},
+
+{
+name:"🕳️ Mawsmai Cave",
+type:"Adventure",
+image:"https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80",
+text:"Natural limestone cave adventure."
+},
+
+{
+name:"📜 Khasi Heritage",
+type:"History & Culture",
+image:"https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=900&q=80",
+text:"Experience Khasi culture and local traditions."
+}
+
+],
+
+hotels:[
+
+{
+name:"Polo Orchid Resort",
+rating:"★★★★★ 4.4",
+price:"₹6,000+ / night",
+location:"Cherrapunji",
+
+image:"https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+{
+name:"🛏️ Valley View Room",
+image:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🛏️ Premium Room",
+image:"https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🛋️ Resort Suite",
+image:"https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80"
+}
+]
+},
+
+{
+name:"Saimika Resort",
+rating:"★★★★☆ 4.2",
+price:"₹4,500+ / night",
+location:"Cherrapunji",
+
+image:"https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+{
+name:"🛏️ Standard Room",
+image:"https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🛏️ Deluxe Room",
+image:"https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🌄 View Room",
+image:"https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=900&q=80"
+}
+]
+},
+
+{
+name:"Cherrapunjee Holiday Resort",
+rating:"★★★★☆ 4.1",
+price:"₹4,000+ / night",
+location:"Sohra",
+
+image:"https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+{
+name:"🛏️ Cottage Room",
+image:"https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🛏️ Deluxe Room",
+image:"https://images.unsplash.com/photo-1590490359683-658d3d23f972?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🌿 Garden View",
+image:"https://images.unsplash.com/photo-1595576508898-0ad5c879a061?auto=format&fit=crop&w=900&q=80"
+}
+]
+}
+
+],
+
+shopping:[
+
+{
+name:"🧺 Sohra Local Market",
+tag:"🌿 Local",
+image:"https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=900&q=80",
+text:"Local market for regional products and souvenirs.",
+items:[
+"🍯 Local honey",
+"🌿 Organic products",
+"🎋 Bamboo products",
+"🎁 Souvenirs"
+]
+},
+
+{
+name:"🎁 Cherrapunji Handicraft Shops",
+tag:"🎋 Handicrafts",
+image:"https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?auto=format&fit=crop&w=900&q=80",
+text:"Small shops selling local handmade products.",
+items:[
+"🎋 Cane products",
+"🧺 Baskets",
+"🧣 Traditional fabrics",
+"🎁 Handmade gifts"
+]
+}
+
+],
+
+crafts:[
+"🎋 Bamboo handicrafts",
+"🧺 Cane baskets",
+"🍯 Local honey",
+"🌿 Organic products"
+],
+
+route:"Cherrapunji → Nohkalikai → Mawsmai → Cherrapunji"
+
+},
+
+
+Dawki:{
+
+name:"Dawki",
+
+places:[
+
+{
+name:"💎 Umngot River",
+type:"Best View",
+image:"https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80",
+text:"Crystal-clear river famous for boating and scenic views."
+},
+
+{
+name:"🚤 Dawki Boating",
+type:"Memorable",
+image:"https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80",
+text:"Enjoy boating on the beautiful Umngot River."
+},
+
+{
+name:"🌉 Dawki Suspension Bridge",
+type:"History & Culture",
+image:"https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=80",
+text:"Historic bridge and important local landmark."
+},
+
+{
+name:"🇮🇳 India-Bangladesh Border",
+type:"Experience",
+image:"https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=900&q=80",
+text:"Visit the famous border area near Dawki."
+}
+
+],
+
+hotels:[
+
+{
+name:"Dawki Riverside Resort",
+rating:"★★★★☆ 4.2",
+price:"₹3,500+ / night",
+location:"Dawki",
+
+image:"https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+{
+name:"🌊 Riverside Room",
+image:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🛏️ Deluxe Room",
+image:"https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🌿 Cottage View",
+image:"https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80"
+}
+]
+},
+
+{
+name:"Betelnut Resort",
+rating:"★★★★☆ 4.1",
+price:"₹4,000+ / night",
+location:"Dawki",
+
+image:"https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+{
+name:"🛏️ Standard Room",
+image:"https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🛏️ Deluxe Room",
+image:"https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🌴 Resort View",
+image:"https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=900&q=80"
+}
+]
+},
+
+{
+name:"Dawki Tourist Lodge",
+rating:"★★★☆☆ 3.9",
+price:"₹2,500+ / night",
+location:"Dawki",
+
+image:"https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+{
+name:"🛏️ Budget Room",
+image:"https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🛏️ Deluxe Room",
+image:"https://images.unsplash.com/photo-1590490359683-658d3d23f972?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🌊 River View",
+image:"https://images.unsplash.com/photo-1595576508898-0ad5c879a061?auto=format&fit=crop&w=900&q=80"
+}
+]
+}
+
+],
+
+shopping:[
+
+{
+name:"🧺 Dawki Local Market",
+tag:"🌿 Local",
+image:"https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=900&q=80",
+text:"Local market for snacks, souvenirs and regional products.",
+items:[
+"🎁 Souvenirs",
+"🌿 Local products",
+"🍯 Honey",
+"🎋 Bamboo items"
+]
+},
+
+{
+name:"🛍️ Dawki Border Market",
+tag:"⭐ Tourist Choice",
+image:"https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=80",
+text:"Popular area for local shopping near the border.",
+items:[
+"👕 Clothes",
+"🎁 Gifts",
+"🧺 Handicrafts",
+"🍴 Local snacks"
+]
+}
+
+],
+
+crafts:[
+"🎋 Bamboo handicrafts",
+"🧺 Cane baskets",
+"🍯 Local honey",
+"🎁 Border souvenirs"
+],
+
+route:"Dawki → Umngot River → Border → Dawki"
+
+},
+
+
+Mawlynnong:{
+
+name:"Mawlynnong",
+
+places:[
+
+{
+name:"🌿 Mawlynnong Village",
+type:"Best View",
+image:"https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=900&q=80",
+text:"Beautiful and clean village surrounded by greenery."
+},
+
+{
+name:"🌉 Living Root Bridge",
+type:"Memorable",
+image:"https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80",
+text:"Natural root bridge created by local communities."
+},
+
+{
+name:"🌳 Balancing Rock",
+type:"Nature",
+image:"https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=80",
+text:"Interesting natural rock formation."
+},
+
+{
+name:"📜 Khasi Village Culture",
+type:"History & Culture",
+image:"https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=900&q=80",
+text:"Learn about Khasi lifestyle and traditions."
+}
+
+],
+
+hotels:[
+
+{
+name:"Mawlynnong Guest House",
+rating:"★★★★☆ 4.2",
+price:"₹3,000+ / night",
+location:"Mawlynnong",
+
+image:"https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+{
+name:"🌿 Village View Room",
+image:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🛏️ Deluxe Room",
+image:"https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🏡 Cottage View",
+image:"https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80"
+}
+]
+},
+
+{
+name:"Mawlynnong Homestay",
+rating:"★★★★☆ 4.3",
+price:"₹2,500+ / night",
+location:"Mawlynnong",
+
+image:"https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+{
+name:"🛏️ Homestay Room",
+image:"https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🌿 Garden View",
+image:"https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🏡 Family Room",
+image:"https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=900&q=80"
+}
+]
+},
+
+{
+name:"R B Guest House",
+rating:"★★★☆☆ 3.9",
+price:"₹2,000+ / night",
+location:"Mawlynnong",
+
+image:"https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+{
+name:"🛏️ Standard Room",
+image:"https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🛏️ Deluxe Room",
+image:"https://images.unsplash.com/photo-1590490359683-658d3d23f972?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🌳 Nature View",
+image:"https://images.unsplash.com/photo-1595576508898-0ad5c879a061?auto=format&fit=crop&w=900&q=80"
+}
+]
+}
+
+],
+
+shopping:[
+
+{
+name:"🌿 Mawlynnong Local Shops",
+tag:"🌱 Eco Products",
+image:"https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=900&q=80",
+text:"Small local shops with eco-friendly products.",
+items:[
+"🎋 Bamboo products",
+"🧺 Handmade baskets",
+"🌿 Organic products",
+"🎁 Souvenirs"
+]
+},
+
+{
+name:"🎁 Village Handicraft Market",
+tag:"🎋 Handmade",
+image:"https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?auto=format&fit=crop&w=900&q=80",
+text:"Handmade products created by local artisans.",
+items:[
+"🎋 Cane products",
+"🧺 Baskets",
+"🪵 Wooden crafts",
+"🎁 Handmade gifts"
+]
+}
+
+],
+
+crafts:[
+"🎋 Bamboo handicrafts",
+"🧺 Cane baskets",
+"🌿 Organic products",
+"🎁 Eco-friendly souvenirs"
+],
+
+route:"Mawlynnong Village → Root Bridge → Balancing Rock"
+
+},
+
+
+Laitlum:{
+
+name:"Laitlum Canyon",
+
+places:[
+
+{
+name:"🌄 Laitlum Canyon Viewpoint",
+type:"Best View",
+image:"https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=80",
+text:"Panoramic mountain and valley views."
+},
+
+{
+name:"🌅 Laitlum Sunset",
+type:"Memorable",
+image:"https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80",
+text:"Beautiful sunset and photography experience."
+},
+
+{
+name:"🥾 Laitlum Trek",
+type:"Adventure",
+image:"https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80",
+text:"Scenic walking and trekking experience."
+},
+
+{
+name:"📜 Local Khasi Culture",
+type:"History & Culture",
+image:"https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=900&q=80",
+text:"Explore local Khasi lifestyle and traditions."
+}
+
+],
+
+hotels:[
+
+{
+name:"Laitlum Nature Stay",
+rating:"★★★★☆ 4.2",
+price:"₹3,500+ / night",
+location:"Near Laitlum",
+
+image:"https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+{
+name:"🌄 Mountain View Room",
+image:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🛏️ Deluxe Room",
+image:"https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🌿 Nature Suite",
+image:"https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80"
+}
+]
+},
+
+{
+name:"Shillong View Homestay",
+rating:"★★★★☆ 4.1",
+price:"₹2,800+ / night",
+location:"East Khasi Hills",
+
+image:"https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+{
+name:"🌄 View Room",
+image:"https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🛏️ Deluxe Room",
+image:"https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🏡 Homestay Room",
+image:"https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=900&q=80"
+}
+]
+},
+
+{
+name:"Hill View Guest House",
+rating:"★★★☆☆ 3.9",
+price:"₹2,500+ / night",
+location:"Laitlum Area",
+
+image:"https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=900&q=80",
+
+rooms:[
+{
+name:"🛏️ Standard Room",
+image:"https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🛏️ Deluxe Room",
+image:"https://images.unsplash.com/photo-1590490359683-658d3d23f972?auto=format&fit=crop&w=900&q=80"
+},
+{
+name:"🌄 Hill View",
+image:"https://images.unsplash.com/photo-1595576508898-0ad5c879a061?auto=format&fit=crop&w=900&q=80"
+}
+]
+}
+
+],
+
+shopping:[
+
+{
+name:"🧺 Local Khasi Market",
+tag:"🌿 Local",
+image:"https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=900&q=80",
+text:"Local market with handmade products and regional goods.",
+items:[
+"🎋 Bamboo crafts",
+"🧺 Cane baskets",
+"🧣 Khasi fabrics",
+"🍯 Local products"
+]
+},
+
+{
+name:"🎁 Laitlum Souvenir Shops",
+tag:"⭐ Tourist Choice",
+image:"https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=80",
+text:"Small souvenir shops for memorable gifts.",
+items:[
+"🎁 Souvenirs",
+"🎋 Handmade products",
+"👕 Local fabrics",
+"🍯 Regional products"
+]
+}
+
+],
+
+crafts:[
+"🎋 Bamboo crafts",
+"🧺 Cane baskets",
+"🧣 Khasi traditional fabrics",
+"🎁 Local souvenirs"
+],
+
+route:"Shillong → Laitlum Canyon → Shillong"
+
+}
+
+};
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function openTab(name,button){
+
+if(name === "hotels"){
+    renderHotels();
+}
+
+if(name === "shopping"){
+    renderShopping();
+}
+
+document.querySelectorAll(".tab").forEach(tab=>{
+    tab.classList.remove("active");
+});
+
+document.getElementById(name).classList.add("active");
+
+document.querySelectorAll(".nav-btn").forEach(btn=>{
+    btn.classList.remove("active");
+});
+
+if(button){
+    button.classList.add("active");
+}
+
+window.scrollTo({
+    top:0,
+    behavior:"smooth"
+});
+
+}
+
+
+function goDiscover(){
+
+openTab(
+    "discover",
+    document.querySelectorAll(".nav-btn")[1]
+);
+
+}
+
+
+/* =====================================================
+   DESTINATION UPDATE
+===================================================== */
+
+function updateDestination(){
+
+selectedDestination =
+document.getElementById("destination").value;
+
+renderDestination();
+
+renderHotels();
+
+renderShopping();
+
+generatePlanContent();
+
+}
+
+
+/* =====================================================
+   DESTINATION PLACES
+===================================================== */
+
+function renderDestination(){
+
+const data =
+destinationData[selectedDestination];
+
+document.getElementById("destinationDetails").innerHTML=`
+
+<div class="card">
+
+<h2>
+📍 Famous Places in ${data.name}
+</h2>
+
+<br>
+
+<div class="grid3">
+
+${data.places.map((p,index)=>`
+
+<div class="place-card"
+onclick="showPlace(${index})">
+
+<img
+src="${p.image}"
+alt="${p.name}">
+
+<div class="place-info">
+
+<h3>
+${p.name}
+</h3>
+
+<p>
+${p.text}
+</p>
+
+<span class="tag">
+${p.type}
+</span>
+
+</div>
+
+</div>
+
+`).join("")}
+
+</div>
+
+
+<div id="placeDetails"
+class="detail-panel">
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/* =====================================================
+   PLACE DETAIL
+===================================================== */
+
+function showPlace(index){
+
+const data =
+destinationData[selectedDestination];
+
+const p =
+data.places[index];
+
+const panel =
+document.getElementById("placeDetails");
+
+panel.innerHTML=`
+
+<h2>
+${p.name}
+</h2>
+
+<img
+src="${p.image}"
+alt="${p.name}">
+
+<h3>
+📖 About This Place
+</h3>
+
+<br>
+
+<p>
+${p.text}
+</p>
+
+<br>
+
+<div class="shopping-highlight">
+
+<b>
+🤖 AI Recommendation
+</b>
+
+<p>
+${p.name} is one of the recommended
+experiences for your ${selectedDestination} trip.
+</p>
+
+</div>
+
+`;
+
+panel.classList.add("show");
+
+panel.scrollIntoView({
+behavior:"smooth",
+block:"start"
+});
+
+}
+
+
+/* =====================================================
+   HOTELS
+===================================================== */
+
+function renderHotels(){
+
+const data =
+destinationData[selectedDestination];
+
+document.getElementById(
+"hotelDestinationTitle"
+).innerText = data.name;
+
+document.getElementById(
+"hotelSubtitle"
+).innerText =
+"Only hotels around your selected destination are shown.";
+
+document.getElementById(
+"hotelGrid"
+).innerHTML =
+
+data.hotels.map((h,index)=>`
+
+<div class="hotel-card"
+onclick="showHotel(${index})">
+
+<img
+src="${h.image}"
+alt="${h.name}">
+
+<div class="hotel-info">
+
+<h3>
+${h.name}
+</h3>
+
+<div class="rating">
+${h.rating}
+</div>
+
+<p>
+📍 ${h.location}
+</p>
+
+<br>
+
+<b>
+${h.price}
+</b>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+
+/* =====================================================
+   HOTEL DETAIL + ROOM VIEWS
+===================================================== */
+
+function showHotel(index){
+
+const data =
+destinationData[selectedDestination];
+
+const h =
+data.hotels[index];
+
+const panel =
+document.getElementById("hotelDetails");
+
+panel.innerHTML=`
+
+<h2>
+🏨 ${h.name}
+</h2>
+
+<br>
+
+<p>
+<b>
+📍 ${h.location}
+</b>
+</p>
+
+<p class="rating">
+${h.rating}
+</p>
+
+<br>
+
+<div class="price">
+${h.price}
+</div>
+
+<br>
+
+<img
+src="${h.image}"
+alt="${h.name}">
+
+<div class="plan">
+
+🛏️
+<b>
+Hotel Experience
+</b>
+
+<p>
+Comfortable stay option near
+${selectedDestination} tourist attractions.
+</p>
+
+</div>
+
+
+<h3 class="room-gallery-title">
+🛏️ Room & Stay Views
+</h3>
+
+<div class="detail-gallery">
+
+${h.rooms.map(room=>`
+
+<div>
+
+<img
+src="${room.image}"
+alt="${room.name}">
+
+<div class="room-label">
+${room.name}
+</div>
+
+</div>
+
+`).join("")}
+
+</div>
+
+
+<div class="shopping-highlight">
+
+<b>
+🤖 Smart Stay Recommendation
+</b>
+
+<p>
+${h.name} is recommended for your
+${selectedDestination} trip.
+Check the room views before choosing your stay.
+</p>
+
+</div>
+
+`;
+
+panel.classList.add("show");
+
+panel.scrollIntoView({
+behavior:"smooth",
+block:"start"
+});
+
+}
+
+
+/* =====================================================
+   SHOPPING
+===================================================== */
+
+function renderShopping(){
+
+const data =
+destinationData[selectedDestination];
+
+document.getElementById(
+"shoppingTitle"
+).innerText =
+"🛍️ "+data.name+" Street Shopping";
+
+document.getElementById(
+"shoppingSubtitle"
+).innerText =
+"Explore shopping places, handicrafts and local products around "+data.name+".";
+
+
+document.getElementById(
+"shoppingGrid"
+).innerHTML =
+
+data.shopping.map((s,index)=>`
+
+<div class="place-card"
+onclick="showShopping(${index})">
+
+<img
+src="${s.image}"
+alt="${s.name}">
+
+<div class="place-info">
+
+<h3>
+${s.name}
+</h3>
+
+<p>
+${s.text}
+</p>
+
+<span class="tag">
+${s.tag}
+</span>
+
+</div>
+
+</div>
+
+`).join("");
+
+
+/*
+   IMPORTANT:
+   Craft items are now clickable cards.
+*/
+
+document.getElementById(
+"craftGrid"
+).innerHTML =
+
+data.crafts.map((c,index)=>`
+
+<div class="craft-card"
+onclick="showCraft(${index})">
+
+<img
+src="${craftGallery[index][0]}"
+alt="${c}">
+
+<div class="craft-info">
+
+<h3>
+${c}
+</h3>
+
+<p>
+Explore different designs, styles and
+local handmade products.
+</p>
+
+<span class="tag">
+📸 Click to View Gallery
+</span>
+
+</div>
+
+</div>
+
+`).join("");
+
+
+document.getElementById(
+"shoppingRecommendation"
+).innerHTML=`
+
+<div class="shopping-highlight">
+
+<b>
+🥇 Best Shopping Choice
+</b>
+
+<p>
+${data.shopping[0].name}
+</p>
+
+<p>
+${data.shopping[0].text}
+</p>
+
+</div>
+
+
+<div class="plan">
+
+🤖
+<b>
+AI Shopping Tip
+</b>
+
+<p>
+Try local handicrafts and regional products
+to make your ${selectedDestination} trip memorable.
+</p>
+
+</div>
+
+`;
+
+}
+
+
+/* =====================================================
+   SHOPPING DETAIL
+===================================================== */
+
+function showShopping(index){
+
+const s =
+destinationData[selectedDestination]
+.shopping[index];
+
+const panel =
+document.getElementById("shoppingDetails");
+
+panel.innerHTML=`
+
+<h2>
+${s.name}
+</h2>
+
+<br>
+
+<img
+src="${s.image}"
+alt="${s.name}">
+
+<h3>
+📖 About This Place
+</h3>
+
+<br>
+
+<p>
+${s.text}
+</p>
+
+<br>
+
+<h3>
+🛍️ What You Can Find
+</h3>
+
+<br>
+
+${s.items.map(item=>`
+
+<div class="plan">
+${item}
+</div>
+
+`).join("")}
+
+
+<div class="shopping-highlight">
+
+<h3>
+🤖 AI Recommendation
+</h3>
+
+<br>
+
+<p>
+Best shopping stop for your
+${selectedDestination} trip.
+</p>
+
+</div>
+
+`;
+
+panel.classList.add("show");
+
+panel.scrollIntoView({
+behavior:"smooth",
+block:"start"
+});
+
+}
+
+
+/* =====================================================
+   ⭐ NEW CRAFT GALLERY FUNCTION
+===================================================== */
+
+function showCraft(index){
+
+const data =
+destinationData[selectedDestination];
+
+const craft =
+data.crafts[index];
+
+const images =
+craftGallery[index];
+
+const panel =
+document.getElementById("shoppingDetails");
+
+
+panel.innerHTML=`
+
+<h2>
+🎁 ${craft}
+</h2>
+
+<p class="gallery-note">
+
+Explore multiple images of
+<b>${craft}</b> and discover the
+traditional handmade products of
+${selectedDestination}.
+
+</p>
+
+
+<h3>
+📸 ${craft} Gallery
+</h3>
+
+<br>
+
+
+<div class="detail-gallery">
+
+${images.map((img,i)=>`
+
+<div>
+
+<img
+src="${img}"
+alt="${craft} - Image ${i+1}">
+
+<div class="room-label">
+${craft} • View ${i+1}
+</div>
+
+</div>
+
+`).join("")}
+
+</div>
+
+
+<div class="shopping-highlight">
+
+<b>
+🤖 AI Shopping Recommendation
+</b>
+
+<p>
+${craft} is a great local product to
+explore during your ${selectedDestination}
+trip. You can compare different designs
+and choose a memorable handmade item.
+</p>
+
+</div>
+
+`;
+
+panel.classList.add("show");
+
+panel.scrollIntoView({
+behavior:"smooth",
+block:"start"
+});
+
+}
+
+
+/* =====================================================
+   BUDGET
+===================================================== */
+
+function changeBudget(amount){
+
+budget += amount;
+
+if(budget < 1000)
+budget = 1000;
+
+if(budget > 100000)
+budget = 100000;
+
+document.getElementById(
+"budget"
+).innerText =
+budget.toLocaleString("en-IN");
+
+}
+
+
+/* =====================================================
+   CALCULATE BUDGET
+===================================================== */
+
+function calculateBudget(){
+
+let days =
+parseInt(
+document.getElementById("days").value
+) || 3;
+
+let hotel =
+Math.round(budget * .35);
+
+let travel =
+Math.round(budget * .20);
+
+let food =
+Math.round(budget * .20);
+
+let activities =
+Math.round(budget * .15);
+
+let emergency =
+Math.round(budget * .10);
+
+let total =
+hotel +
+travel +
+food +
+activities +
+emergency;
+
+
+document.getElementById(
+"discoverBudget"
+).innerHTML=`
+
+<div class="card">
+
+<h2>
+📊 Smart Budget Calculation
+</h2>
+
+<div class="budget-result">
+
+<div class="budget-item">
+🏨 Hotel
+<strong>
+₹${hotel.toLocaleString("en-IN")}
+</strong>
+</div>
+
+<div class="budget-item">
+🚗 Travel
+<strong>
+₹${travel.toLocaleString("en-IN")}
+</strong>
+</div>
+
+<div class="budget-item">
+🍴 Food
+<strong>
+₹${food.toLocaleString("en-IN")}
+</strong>
+</div>
+
+<div class="budget-item">
+🎟️ Activities
+<strong>
+₹${activities.toLocaleString("en-IN")}
+</strong>
+</div>
+
+</div>
+
+
+<div class="plan">
+
+🚑 Emergency Reserve
+
+<strong>
+₹${emergency.toLocaleString("en-IN")}
+</strong>
+
+</div>
+
+
+<div class="total">
+
+Estimated Trip Budget:
+₹${total.toLocaleString("en-IN")}
+
+<br>
+
+<small>
+${days} day trip • ${selectedDestination}
+</small>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/* =====================================================
+   AI PLAN
+===================================================== */
+
+function generatePlanContent(){
+
+const data =
+destinationData[selectedDestination];
+
+let days =
+parseInt(
+document.getElementById("days").value
+) || 3;
+
+days =
+Math.max(
+1,
+Math.min(30,days)
+);
+
+
+let html=`
+
+<div class="shopping-highlight">
+
+🤖
+<b>
+AI Plan – ${data.name}
+</b>
+
+<p>
+${days} day personalized itinerary generated.
+</p>
+
+</div>
+
+`;
+
+
+for(let i=1;i<=days;i++){
+
+let place =
+data.places[
+(i-1) % data.places.length
+];
+
+let shop =
+data.shopping[
+(i-1) % data.shopping.length
+];
+
+
+html += `
+
+<div class="plan">
+
+<b>
+📅 Day ${i} – ${place.name}
+</b>
+
+<p>
+🌄 ${place.text}
+</p>
+
+<p>
+🛍️ Shopping: ${shop.name}
+</p>
+
+</div>
+
+`;
+
+}
+
+
+html += `
+
+<div class="plan">
+
+📜
+<b>
+History & Culture
+</b>
+
+<p>
+
+${
+data.places.find(
+p=>p.type==="History & Culture"
+)?.name
+||
+data.places[0].name
+}
+
+</p>
+
+</div>
+
+
+<div class="plan">
+
+⭐
+<b>
+Memorable Experience
+</b>
+
+<p>
+
+${
+data.places.find(
+p=>p.type==="Memorable"
+)?.name
+||
+data.places[0].name
+}
+
+</p>
+
+</div>
+
+
+<div class="plan">
+
+🏨
+<b>
+Recommended Stay
+</b>
+
+<p>
+${data.hotels[0].name}
+</p>
+
+</div>
+
+
+<div class="plan">
+
+🎋
+<b>
+Handcrafted
+</b>
+
+<p>
+${data.crafts.join(" • ")}
+</p>
+
+</div>
+
+
+<div class="plan">
+
+🛡️
+<b>
+Safe Route
+</b>
+
+<p>
+${data.route}
+</p>
+
+</div>
+
+
+<div class="plan">
+
+💰
+<b>
+Selected Budget
+</b>
+
+<p>
+₹${budget.toLocaleString("en-IN")}
+</p>
+
+</div>
+
+`;
+
+
+document.getElementById(
+"planContent"
+).innerHTML = html;
+
+
+document.getElementById(
+"safeRoute"
+).innerText =
+data.route;
+
+}
+
+
+/* =====================================================
+   GENERATE PLAN
+===================================================== */
+
+function generatePlan(){
+
+calculateBudget();
+
+generatePlanContent();
+
+openTab(
+"plan",
+document.querySelectorAll(".nav-btn")[2]
+);
+
+}
+
+
+/* =====================================================
+   HOME FEATURES
+===================================================== */
+
+function showFeature(type){
+
+let data={
+
+view:{
+
+title:"🌄 Best View Experience",
+
+text:
+"Explore beautiful mountain viewpoints, valleys and waterfalls.",
+
+images:[
+
+"https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=80",
+
+"https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80",
+
+"https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=900&q=80"
+
+]
+
+},
+
+
+history:{
+
+title:"📜 History & Culture",
+
+text:
+"Explore heritage places and local Khasi culture.",
+
+images:[
+
+"https://images.unsplash.com/photo-1564399579883-451a5d44ec08?auto=format&fit=crop&w=900&q=80",
+
+"https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=900&q=80",
+
+"https://images.unsplash.com/photo-1568322445389-f64ac2515020?auto=format&fit=crop&w=900&q=80"
+
+]
+
+},
+
+
+memory:{
+
+title:"⭐ Memorable Experience",
+
+text:
+"Create unforgettable memories through nature, food, photography and shopping.",
+
+images:[
+
+"https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80",
+
+"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
+
+"https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=900&q=80"
+
+]
+
+}
+
+};
+
+
+let f =
+data[type];
+
+
+document.getElementById(
+"featureDetails"
+).innerHTML=`
+
+<h2>
+${f.title}
+</h2>
+
+<br>
+
+<p>
+${f.text}
+</p>
+
+<br>
+
+<h3>
+📸 Related Images
+</h3>
+
+<br>
+
+<div class="detail-gallery">
+
+${f.images.map((img,i)=>`
+
+<div>
+
+<img
+src="${img}"
+alt="${f.title}">
+
+<div class="room-label">
+View ${i+1}
+</div>
+
+</div>
+
+`).join("")}
+
+</div>
+
+`;
+
+
+document.getElementById(
+"featureDetails"
+).classList.add("show");
+
+
+document.getElementById(
+"featureDetails"
+).scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+window.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+document.getElementById(
+"budget"
+).innerText =
+budget.toLocaleString("en-IN");
+
+updateDestination();
+
+});
+
+</script>
+
+</body>
+</html>
